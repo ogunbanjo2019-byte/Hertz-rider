@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { findRide } from '../../database/store.js';
+import { fail } from '../../shared/core.js';
+import { requireAuth } from '../../middleware/auth.js';
+import { canAccessRide, streamRideEvents, realtimeHealth } from '../../services/realtime.js';
+const router = Router();
+router.use(requireAuth);
+router.get('/health', (_req, res) => res.json({ success: true, data: realtimeHealth(), error: null }));
+router.get('/rides/:id/events', (req, res) => { const ride = findRide(req.params.id); if (!canAccessRide(req, ride)) return fail(res, ride ? 403 : 404, ride ? 'Ride access denied' : 'Ride not found', ride ? 'FORBIDDEN' : 'RIDE_NOT_FOUND'); return streamRideEvents(req, res, ride); });
+export default router;

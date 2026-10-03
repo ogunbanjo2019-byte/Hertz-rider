@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: CNG E-Hailing Platform API
+  version: 0.1.0
+servers:
+  - url: http://localhost:4000/api/v1
+security:
+  - bearerAuth: []
+paths:
+  /auth/register:
+    post:
+      security: []
+      summary: Register a rider or driver
+      responses:
+        '201': { description: Created }
+  /auth/login:
+    post:
+      security: []
+      summary: Login
+      responses:
+        '200': { description: Authenticated }
+  /rides:
+    post:
+      summary: Request a ride
+      responses:
+        '201': { description: Ride created }
+    get:
+      summary: List rides visible to the current role
+      responses:
+        '200': { description: Rides returned }
+  /rides/{id}/accept:
+    post:
+      summary: Accept an available ride as an eligible driver
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Ride accepted }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
